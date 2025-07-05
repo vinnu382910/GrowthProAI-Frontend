@@ -11,7 +11,7 @@ function App() {
   const [errors, setErrors] = useState({})
   const [notification, setNotification] = useState(null)
 
-  const API_BASE_URL = "https://growthproai-backend.onrender.com"
+  const API_BASE_URL = "https://growthproai-backend.onrender.com"// http://localhost:5000
 
   const showNotification = (message, type) => {
     setNotification({ message, type })
@@ -60,7 +60,8 @@ function App() {
       }
 
       const data = await response.json()
-      setBusinessData(data)
+      setBusinessData({data, businessName, location});
+      console.log(businessData)
       showNotification("Business data loaded successfully!", "success")
     } catch (error) {
       console.error("Error fetching business data:", error)
@@ -77,7 +78,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/regenerate-headline?name=${encodeURIComponent(businessName)}&location=${encodeURIComponent(location)}`,
+        `${API_BASE_URL}/api/regenerate-headline?name=${encodeURIComponent(businessData.businessName)}&location=${encodeURIComponent(businessData.location)}`,
       )
 
       if (!response.ok) {
@@ -85,7 +86,18 @@ function App() {
       }
 
       const data = await response.json()
-      setBusinessData((prev) => (prev ? { ...prev, headline: data.headline } : null))
+      setBusinessData((prev) =>
+        prev
+          ? {
+              ...prev,
+              data: {
+                ...prev.data,
+                headline: data.headline,
+              },
+            }
+          : null
+      );
+
       showNotification("Your SEO headline has been regenerated!", "success")
     } catch (error) {
       console.error("Error regenerating headline:", error)
@@ -203,10 +215,10 @@ function App() {
               <div className="space-y-6">
                 {/* Business Header */}
                 <div className="text-center pb-4 border-b border-gray-200">
-                  <h3 className="text-xl font-semibold text-gray-900">{businessName}</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">{businessData.businessName}</h3>
                   <p className="text-gray-600 flex items-center justify-center gap-1 mt-1">
                     <MapPin className="h-4 w-4" />
-                    {location}
+                    {businessData.location}
                   </p>
                 </div>
 
@@ -215,7 +227,7 @@ function App() {
                   <div className="text-center p-4 bg-yellow-50 rounded-lg">
                     <div className="flex items-center justify-center gap-1 mb-2">
                       <Star className="h-5 w-5 text-yellow-500 fill-current" />
-                      <span className="text-2xl font-bold text-gray-900">{businessData.rating}</span>
+                      <span className="text-2xl font-bold text-gray-900">{businessData.data.rating}</span>
                     </div>
                     <p className="text-sm text-gray-600">Google Rating</p>
                   </div>
@@ -223,7 +235,7 @@ function App() {
                   <div className="text-center p-4 bg-blue-50 rounded-lg">
                     <div className="flex items-center justify-center gap-1 mb-2">
                       <Users className="h-5 w-5 text-blue-500" />
-                      <span className="text-2xl font-bold text-gray-900">{businessData.reviews}</span>
+                      <span className="text-2xl font-bold text-gray-900">{businessData.data.reviews}</span>
                     </div>
                     <p className="text-sm text-gray-600">Reviews</p>
                   </div>
@@ -236,7 +248,7 @@ function App() {
                     <h4 className="font-semibold text-gray-900">AI-Generated SEO Headline</h4>
                   </div>
                   <div className="p-4 bg-indigo-50 rounded-lg">
-                    <p className="text-gray-800 font-medium leading-relaxed">"{businessData.headline}"</p>
+                    <p className="text-gray-800 font-medium leading-relaxed">"{businessData.data.headline}"</p>
                   </div>
                   <button
                     onClick={handleRegenerateHeadline}
@@ -251,7 +263,7 @@ function App() {
                     ) : (
                       <div className="flex items-center justify-center gap-2">
                         <Sparkles className="h-4 w-4" />
-                        Regenerate SEO Headline
+                        Regenerate SEO Headline with AI
                       </div>
                     )}
                   </button>
