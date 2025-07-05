@@ -9,11 +9,12 @@ This project is part of the **GrowthProAI Full Stack Intern Assignment**.
 ## 🔍 Overview
 
 This dashboard allows users to:
-- Enter a **business name** and **location**
-- Get simulated **Google rating**, **number of reviews**, and an **AI-generated SEO headline**
-- Regenerate the SEO headline on demand
 
-It integrates seamlessly with the deployed backend hosted at:  
+* Enter a **business name** and **location**
+* Get simulated **Google rating**, **number of reviews**, and an **AI-generated SEO headline**
+* Regenerate the SEO headline on demand
+
+It integrates seamlessly with the deployed backend hosted at:
 👉 [`https://growthproai-backend.onrender.com`](https://growthproai-backend.onrender.com)
 
 ---
@@ -21,36 +22,37 @@ It integrates seamlessly with the deployed backend hosted at:
 ## ✨ Features
 
 ### ✅ Core Functionalities
-- **Pure React.js** (JavaScript only – no TypeScript)
-- **Tailwind CSS** for responsive UI
-- **Lucide Icons** for intuitive visuals
-- **API Integration** with your deployed backend
-- **Form validation** with real-time feedback
-- **Toast notifications** for success and error handling
-- **Loading spinners** during async calls
+
+* **Pure React.js** (JavaScript only – no TypeScript)
+* **Tailwind CSS** for responsive UI
+* **Lucide Icons** for intuitive visuals
+* **API Integration** with your deployed backend
+* **Form validation** with real-time feedback
+* **Toast notifications** for success and error handling
+* **Loading spinners** during async calls
 
 ### ✅ API Integration
-- `POST /api/business-data`: Fetch business info (rating, reviews, headline)
-- `GET /api/regenerate-headline`: Regenerate a new AI-style SEO headline
+
+* `POST /api/business-data`: Fetch business info (rating, reviews, headline)
+* `GET /api/regenerate-headline`: Regenerate a new AI-style SEO headline
 
 ---
 
 ## ⚙️ Tech Stack
 
-| Tool             | Purpose                          |
-|------------------|----------------------------------|
-| React 18         | Frontend Framework (JavaScript)  |
-| Tailwind CSS     | Utility-first CSS styling        |
-| Lucide React     | Icon library                     |
-| Fetch API        | API requests (native JS)         |
-| Create React App | Project scaffold                 |
+| Tool             | Purpose                         |
+| ---------------- | ------------------------------- |
+| React 18         | Frontend Framework (JavaScript) |
+| Tailwind CSS     | Utility-first CSS styling       |
+| Lucide React     | Icon library                    |
+| Fetch API        | API requests (native JS)        |
+| Create React App | Project scaffold                |
 
 ---
 
 ## 📁 Folder Structure
 
 ```
-
 growthproai-frontend/
 ├── public/
 │   └── index.html
@@ -63,27 +65,28 @@ growthproai-frontend/
 ├── postcss.config.js    # PostCSS plugins
 ├── package.json
 └── README.md
-
-````
+```
 
 ---
 
 ## 📦 Installation & Setup
 
 ### ✅ Prerequisites
-- Node.js `v16+`
-- npm or yarn
-- Access to backend API (`https://growthproai-backend.onrender.com`)
+
+* Node.js `v16+`
+* npm or yarn
+* Access to backend API (`https://growthproai-backend.onrender.com`)
 
 ---
 
 ### 🧱 Step-by-Step Setup
 
 1. **Create the React app**
+
 ```bash
 npx create-react-app growthproai-frontend
 cd growthproai-frontend
-````
+```
 
 2. **Install Tailwind CSS**
 
@@ -131,11 +134,13 @@ Visit: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🔗 API Details
+## 🔗 API Details (Updated)
 
 ### `POST /api/business-data`
 
-* **Send:**
+When the user submits the form with business name and location, the frontend sends a POST request:
+
+#### ➔ **Request Body**
 
 ```json
 {
@@ -144,19 +149,45 @@ Visit: [http://localhost:3000](http://localhost:3000)
 }
 ```
 
-* **Receive:**
+#### ➔ **Response from Backend**
 
 ```json
 {
-  "rating": 4.3,
-  "reviews": 127,
-  "headline": "Why Cake & Co is Mumbai's Sweetest Spot in 2025"
+  "data": {
+    "rating": 4.3,
+    "reviews": 127,
+    "headline": "Why Cake & Co is Mumbai's Sweetest Spot in 2025"
+  }
 }
 ```
 
+#### ➔ **Frontend stores it using**
+
+```js
+setBusinessData({ data, businessName, location });
+```
+
+#### ➔ **Resulting `businessData` object**
+
+```json
+{
+  "data": {
+    "rating": 4.3,
+    "reviews": 127,
+    "headline": "Why Cake & Co is Mumbai's Sweetest Spot in 2025"
+  },
+  "businessName": "Cake & Co",
+  "location": "Mumbai"
+}
+```
+
+---
+
 ### `GET /api/regenerate-headline?name=...&location=...`
 
-* **Receive:**
+When the user clicks "Regenerate SEO Headline", a GET request is sent using the current name and location.
+
+#### ➔ **Response**
 
 ```json
 {
@@ -164,9 +195,19 @@ Visit: [http://localhost:3000](http://localhost:3000)
 }
 ```
 
+#### ➔ **Frontend updates only headline using**
+
+```js
+setBusinessData(prev =>
+  prev ? { ...prev, data: { ...prev.data, headline: newHeadline } } : null
+);
+```
+
+This ensures the existing rating, reviews, name, and location stay the same — only the `headline` is updated in the `businessData`.
+
 ---
 
-## 🖼️ UI/UX Highlights
+## 🗼 UI/UX Highlights
 
 * 📱 Mobile-first responsive design
 * 🎨 Modern gradient backgrounds and clean layout
